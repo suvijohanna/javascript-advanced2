@@ -13,3 +13,5 @@ async function fetchData(url, options = {}) {
   }
   return json;
 }
+
+export default fetchData;

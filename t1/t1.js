@@ -48,3 +48,11 @@ const teeRavintolaLista = async () => {
 };
 
 teeRavintolaLista();
+
+const celsiusTemperatures = [0, 10, 20, 30, 40];
+
+const fahrenheitTemperatures = celsiusTemperatures.map(function (celcius) {
+  return (celcius * 9) / 5 + 32;
+});
+
+console.log(fahrenheitTemperatures);
