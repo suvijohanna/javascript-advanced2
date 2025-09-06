@@ -41,20 +41,27 @@ const restaurantModal = (restaurant, menu) => {
       course.diets = course.diets.split(',');
     }
 
-    const filteredDiets = diets?.filter((diet) => diet !== '*' && diet !== 'A');
+    const filteredDiets = diets?.filter(
+      (diet) => diet !== '*' && diet !== 'A' && diet !== 'ILM'
+    );
 
     const dietsWithEmojis = filteredDiets?.map((diet) => {
       switch (diet) {
         case 'Veg':
           return '&#129382;';
         case 'G':
-          return '&#127806;';
+          return '&#127838;';
         case 'M':
-          return '&#x1f42e;';
+          return '&#129472;';
+        case 'L':
+          return '&#128046;';
+        case 'VS':
+          return '&#129476;';
         default:
           return '&#128286;';
       }
     });
+    console.log(diets);
 
     const dietString = dietsWithEmojis?.reduce(
       (accString, diet) => accString + diet + '&nbsp;',
