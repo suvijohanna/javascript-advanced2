@@ -1,6 +1,5 @@
 'use strict';
 
-// eslint-disable-next-line no-unused-vars
 async function fetchData(url, options = {}) {
   const response = await fetch(url, options);
   const json = await response.json();

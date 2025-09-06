@@ -1,13 +1,16 @@
 'use strict';
 
 import {restaurantModal, restaurantRow} from './components.js';
-import fetchData from './fetchData.js';
-
-const apiURL = 'https://media1.edu.metropolia.fi/restaurant/api/v1';
+import fetchData from './utils/fetchData.js';
+import {apiURL} from './utils/variables.js';
 
 const modal = document.querySelector('#modal');
 const modalContent = document.querySelector('#modal-content');
 const closeButtons = document.querySelectorAll('.close-button');
+const resetButton = document.querySelector('#reset');
+const compassButton = document.querySelector('#compass');
+const sodexoButton = document.querySelector('#sodexo');
+const target = document.querySelector('#target');
 
 const highlight = (evt) => {
   document.querySelector('.highlight')?.classList.remove('highlight');
@@ -21,17 +24,20 @@ const openModal = (restaurant, dailyMenu) => {
   modalContent.insertAdjacentHTML('beforeend', html);
 };
 
-// modaalien sulkeminen
 for (const closeButton of closeButtons) {
   closeButton.addEventListener('click', (evt) => {
     evt.currentTarget.parentElement.parentElement.close();
   });
 }
 
-const teeRavintolaLista = async () => {
-  const restaurants = await fetchData(apiURL + '/restaurants');
+const haeRavintolat = async () => {
+  return await fetchData(apiURL + '/restaurants');
+};
 
+const teeRavintolaLista = async (restaurants) => {
   restaurants.sort((a, b) => a.name.localeCompare(b.name));
+
+  target.innerHTML = '';
 
   restaurants.forEach((restaurant) => {
     const rivi = restaurantRow(restaurant);
@@ -42,17 +48,25 @@ const teeRavintolaLista = async () => {
       );
       openModal(restaurant, dailyMenu);
     });
-
-    document.querySelector('#target').appendChild(rivi);
+    target.appendChild(rivi);
   });
 };
 
-teeRavintolaLista();
+const restaurants = await haeRavintolat();
+teeRavintolaLista(restaurants);
 
-const celsiusTemperatures = [0, 10, 20, 30, 40];
-
-const fahrenheitTemperatures = celsiusTemperatures.map(function (celcius) {
-  return (celcius * 9) / 5 + 32;
+sodexoButton.addEventListener('click', () => {
+  teeRavintolaLista(
+    restaurants.filter((restaurant) => restaurant.company === 'Sodexo')
+  );
 });
 
-console.log(fahrenheitTemperatures);
+compassButton.addEventListener('click', () => {
+  teeRavintolaLista(
+    restaurants.filter((restaurant) => restaurant.company === 'Compass Group')
+  );
+});
+
+resetButton.addEventListener('click', () => {
+  teeRavintolaLista(restaurants);
+});

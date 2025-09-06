@@ -1,26 +1,18 @@
 'use strict';
 
 const restaurantRow = (restaurant) => {
-  const {name, address, city, company} = restaurant;
-
-  const rivi = document.createElement('tr');
-
-  const nimiSolu = document.createElement('td');
-  nimiSolu.innerText = name;
-
-  const osoiteSolu = document.createElement('td');
-  osoiteSolu.innerText = `${address} ${city}`;
-
-  const firmaSolu = document.createElement('td');
-  firmaSolu.innerText = company;
-
-  rivi.append(nimiSolu, osoiteSolu, firmaSolu);
-
-  return rivi;
+  const {name, company} = restaurant;
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td>${name}</td>
+    <td>${company}</td>
+  `;
+  return tr;
 };
 
 const restaurantModal = (restaurant, menu) => {
   const {name, address, postalCode, city, phone, company} = restaurant;
+  const {courses} = menu;
   let html = `
       <h3>${name}</h3>
       <address>
@@ -30,7 +22,7 @@ const restaurantModal = (restaurant, menu) => {
         ${company}
       </address>
     `;
-  html += `
+  let menuHtml = `
     <table>
       <thead>
         <tr>
@@ -39,19 +31,17 @@ const restaurantModal = (restaurant, menu) => {
           <th>Allergeenit</th>
         </tr>
       </thead>
-      <tbody>`;
-  // silmukalla menu läpi, lisää html stringiin
-  console.log(menu.courses);
+      <tbody>
+  `;
 
-  menu.courses.forEach((course) => {
-    console.log(course);
+  courses.forEach((course) => {
+    const {name, price, diets} = course;
+
     if (typeof course.diets === 'string') {
       course.diets = course.diets.split(',');
     }
 
-    const filteredDiets = course.diets?.filter(
-      (diet) => diet !== '*' && diet !== 'A'
-    );
+    const filteredDiets = diets?.filter((diet) => diet !== '*' && diet !== 'A');
 
     const dietsWithEmojis = filteredDiets?.map((diet) => {
       switch (diet) {
@@ -66,26 +56,26 @@ const restaurantModal = (restaurant, menu) => {
       }
     });
 
-    //const dietString = dietsWithEmojis?.join('&nbsp;');
-
     const dietString = dietsWithEmojis?.reduce(
       (accString, diet) => accString + diet + '&nbsp;',
       ''
     );
 
-    html += `
+    menuHtml += `
       <tr>
-        <td>${course.name}</td>
-        <td>${course.price}</td>
+        <td>${name}</td>
+        <td>${price}</td>
         <td>${dietString}</td>
       </tr>
     `;
   });
 
-  html += `
+  menuHtml += `
     </tbody>
   </table>
   `;
+  html += menuHtml;
+
   return html;
 };
 
